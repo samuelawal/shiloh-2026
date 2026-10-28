@@ -1,26 +1,141 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@theme {
+  /* Winners red */
+  --color-night: #16040a;
+  --color-wine: #5a0b16;
+  --color-ruby: #e0313c;
+  --color-flame: #d4111c;
+  --color-flame-dark: #9e0c14;
+  --color-accent: #ff6b6b;
+  --color-accent-soft: #ffb4ae;
+  --color-cream: #fdf7f5;
+  --color-ink: #1d1214;
+  --color-muted: #6b5a5d;
+
+  --font-sans: var(--font-manrope);
+  --font-display: var(--font-fraunces);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-cream);
+  color: var(--color-ink);
+  font-family: var(--font-sans), system-ui, sans-serif;
+}
+
+@utility container-page {
+  @apply mx-auto w-full max-w-6xl px-4 sm:px-6;
+}
+
+@utility eyebrow {
+  @apply text-xs font-bold tracking-[0.25em] text-flame uppercase;
+}
+
+@utility heading {
+  @apply font-display text-3xl leading-tight font-semibold text-ink sm:text-4xl md:text-5xl;
+}
+
+@utility btn {
+  @apply inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-bold transition focus-visible:outline-2 focus-visible:outline-offset-2 disabled:cursor-not-allowed disabled:opacity-60;
+}
+
+@utility btn-primary {
+  @apply btn bg-flame text-white shadow-lg shadow-flame/25 hover:bg-flame-dark focus-visible:outline-flame;
+}
+
+@utility btn-outline {
+  @apply btn border border-white/40 text-white hover:bg-white/10 focus-visible:outline-white;
+}
+
+@utility card {
+  @apply rounded-2xl border border-black/5 bg-white p-6 shadow-sm;
+}
+
+@utility field-label {
+  @apply mb-1.5 block text-sm font-semibold text-ink;
+}
+
+@utility field-input {
+  @apply w-full rounded-xl border border-black/10 bg-white px-4 py-3 text-sm text-ink outline-none transition placeholder:text-muted/60 focus:border-ruby focus:ring-4 focus:ring-ruby/15;
+}
+
+@utility field-error {
+  @apply mt-1 text-xs font-medium text-flame;
+}
+
+.sky-gradient {
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 110%, rgb(212 17 28 / 0.45), transparent 60%),
+    radial-gradient(ellipse 60% 50% at 80% 0%, rgb(255 107 107 / 0.22), transparent 70%),
+    linear-gradient(180deg, var(--color-night) 0%, var(--color-wine) 65%, #8a0f1c 100%);
+}
+
+.stars {
+  background-image:
+    radial-gradient(1px 1px at 20% 30%, white, transparent),
+    radial-gradient(1px 1px at 70% 20%, white, transparent),
+    radial-gradient(1.5px 1.5px at 40% 70%, white, transparent),
+    radial-gradient(1px 1px at 85% 60%, white, transparent),
+    radial-gradient(1px 1px at 10% 80%, white, transparent),
+    radial-gradient(1.5px 1.5px at 55% 15%, white, transparent);
+  background-size: 400px 400px;
+  opacity: 0.5;
+}
+
+@keyframes caption-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+    filter: blur(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+}
+
+@keyframes panel-in {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.caption-in {
+  animation: caption-in 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+.animate-panel-in {
+  animation: panel-in 0.45s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+.glow-text {
+  text-shadow:
+    0 0 18px rgb(255 80 80 / 0.55),
+    0 0 48px rgb(212 17 28 / 0.4);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .caption-in,
+  .animate-panel-in {
+    animation: none;
+  }
+}
+
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  body {
+    background: white;
+  }
 }
