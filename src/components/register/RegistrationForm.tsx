@@ -132,7 +132,7 @@ export function RegistrationForm() {
             {ATTENDANCE_DAYS.map((day) => (
               <label
                 key={day}
-                className="flex cursor-pointer items-center justify-center gap-2 rounded-xl border border-black/10 px-3 py-2.5 text-sm font-semibold has-checked:border-wine has-checked:bg-wine has-checked:text-white"
+                className="flex cursor-pointer items-center justify-center gap-2 rounded-xl border border-black/10 px-1 py-2.5 text-sm font-semibold whitespace-nowrap sm:px-3 has-checked:border-wine has-checked:bg-wine has-checked:text-white"
               >
                 <input type="checkbox" value={day} className="sr-only" {...register("days")} />
                 {day}

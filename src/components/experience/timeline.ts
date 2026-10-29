@@ -1,17 +1,21 @@
 import { CatmullRomCurve3, Vector3 } from "three";
 import { OVERVIEW, type Vec3 } from "./config";
 
-export const INTRO_DURATION = 24;
+// Every beat below is cut to a phrase break in the voice recording
+// (public/experience/shiloh-voice.m4a), measured from its loudness envelope:
+// breaks at ~8.6 s, 13.6 s, 15.2 s, 17.4 s, 19.6 s, 21.1 s, 22.7 s and 24.7 s.
+// Re-measure and update these if the recording changes.
+export const INTRO_DURATION = 26;
 
 type Shot = { t: number; position: Vec3; target: Vec3 };
 
 const SHOTS: Shot[] = [
   { t: 0, position: [1900, 700, -1500], target: [800, 0, -700] },
-  { t: 5, position: [1150, 280, -1080], target: [200, 20, -600] },
-  { t: 9, position: [320, 140, -760], target: [30, 30, -420] },
-  { t: 12.5, position: [170, 160, -210], target: [12, 40, -30] },
-  { t: 16, position: [20, 250, 40], target: [12, 0, -30] },
-  { t: 19.5, position: [-110, 60, 70], target: [12, 6, -30] },
+  { t: 5.4, position: [1150, 280, -1080], target: [200, 20, -600] },
+  { t: 9.1, position: [320, 140, -760], target: [30, 30, -420] },
+  { t: 13.6, position: [170, 160, -210], target: [12, 40, -30] },
+  { t: 17.3, position: [20, 250, 40], target: [12, 0, -30] },
+  { t: 21.6, position: [-110, 60, 70], target: [12, 6, -30] },
   { t: INTRO_DURATION, position: OVERVIEW.position, target: OVERVIEW.target },
 ];
 
@@ -58,7 +62,8 @@ const ORB_PATH = toCurve([
   [12, 8, -30],
 ]);
 const ORB_START = 0.6;
-const ORB_END = 15;
+// Lands on the altar in the long pause at 15.2 s, just before the pillars.
+const ORB_END = 16.1;
 
 export function orbAt(t: number, out: Vector3) {
   const u = clamp01((t - ORB_START) / (ORB_END - ORB_START));
@@ -67,23 +72,24 @@ export function orbAt(t: number, out: Vector3) {
 }
 
 export function roofOpacityAt(t: number) {
-  if (t < 12.5) return 1;
-  if (t < 15) return 1 - smooth((t - 12.5) / 2.5);
-  if (t < 21) return 0;
-  return smooth(clamp01((t - 20.5) / 2.5));
+  if (t < 13.6) return 1;
+  if (t < 16) return 1 - smooth((t - 13.6) / 2.4);
+  if (t < 22.4) return 0;
+  return smooth(clamp01((t - 22.4) / 2.5));
 }
 
 export type Cue = "travel" | "gate" | "tabernacle" | "pillars" | "title";
 
 export const CUES: { cue: Cue; at: number }[] = [
-  { cue: "travel", at: 0.8 },
-  { cue: "gate", at: 7 },
-  { cue: "tabernacle", at: 11.5 },
-  { cue: "pillars", at: 14.8 },
-  { cue: "title", at: 20.6 },
+  { cue: "travel", at: 0.6 },
+  { cue: "gate", at: 9.1 },
+  { cue: "tabernacle", at: 13.9 },
+  { cue: "pillars", at: 16.3 },
+  { cue: "title", at: 23.9 },
 ];
 
-export const PILLAR_STEP = 1.25;
+/** When each pillar word appears, relative to the "pillars" cue: one per phrase. */
+export const PILLAR_DELAYS = [0, 2.3, 3.8, 5.5];
 
 export function cueAt(t: number): Cue | null {
   let current: Cue | null = null;

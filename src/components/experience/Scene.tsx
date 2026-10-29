@@ -129,7 +129,8 @@ function Hotspot({ place, active, hint, onSelect }: { place: Place; active: bool
       <button
         type="button"
         onClick={onSelect}
-        className={`group flex items-center gap-2 rounded-full border px-3 py-1.5 text-sm font-semibold whitespace-nowrap backdrop-blur-md transition ${
+        aria-label={place.label}
+        className={`group flex items-center gap-2 rounded-full border p-2 text-sm font-semibold whitespace-nowrap backdrop-blur-md transition sm:px-3 sm:py-1.5 ${
           active
             ? "border-accent/80 bg-flame/90 text-white shadow-[0_0_30px_rgba(215,20,30,0.7)]"
             : "border-white/15 bg-black/45 text-white hover:border-accent/60 hover:text-white"
@@ -139,8 +140,9 @@ function Hotspot({ place, active, hint, onSelect }: { place: Place; active: bool
           <span className="absolute inline-flex size-full animate-ping rounded-full bg-accent opacity-70" />
           <span className="relative inline-flex size-2.5 rounded-full bg-accent" />
         </span>
-        {place.label}
-        {hint && !active && <span className="rounded-full bg-flame px-2 py-0.5 text-xs text-white">Click to open →</span>}
+        {/* On phones only the active place shows its name; the menu below names the rest. */}
+        <span className={active ? "pr-1" : "hidden sm:inline [@media(max-height:500px)]:hidden"}>{place.label}</span>
+        {hint && !active && <span className="hidden rounded-full bg-flame px-2 py-0.5 text-xs text-white sm:inline [@media(max-height:500px)]:hidden">Click to open →</span>}
       </button>
     </Html>
   );

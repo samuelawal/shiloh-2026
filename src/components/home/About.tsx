@@ -10,7 +10,7 @@ const HIGHLIGHTS = [
 
 export function About() {
   return (
-    <section id="about" className="scroll-mt-20 py-20 sm:py-28">
+    <section id="about" className="scroll-mt-20 overflow-x-clip py-20 sm:py-28">
       <div className="container-page grid items-center gap-12 lg:grid-cols-2">
         <div>
           <p className="eyebrow">About Shiloh</p>

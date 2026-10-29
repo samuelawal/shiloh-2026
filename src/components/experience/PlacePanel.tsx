@@ -210,7 +210,7 @@ export function PlacePanel({
       key={isService ? "services" : place}
       role="dialog"
       aria-label={title}
-      className="animate-panel-in pointer-events-auto absolute inset-x-3 bottom-24 max-h-[62vh] overflow-y-auto rounded-3xl border border-white/10 bg-[#0b0a10]/80 p-6 text-sm leading-relaxed text-white shadow-2xl backdrop-blur-xl sm:inset-x-auto sm:top-24 sm:right-6 sm:bottom-auto sm:max-h-[calc(100dvh-13rem)] sm:w-[400px]"
+      className="animate-panel-in pointer-events-auto absolute inset-x-3 bottom-24 max-h-[62vh] overflow-y-auto rounded-3xl border border-white/10 bg-[#0b0a10]/80 p-6 text-sm leading-relaxed text-white shadow-2xl backdrop-blur-xl sm:inset-x-auto sm:top-24 sm:right-6 sm:bottom-auto sm:max-h-[calc(100dvh-13rem)] sm:w-[400px] [@media(max-height:500px)]:top-[4.5rem] [@media(max-height:500px)]:max-h-[calc(100dvh-9rem)] [@media(max-height:500px)]:p-4"
     >
       <button
         type="button"
@@ -221,7 +221,7 @@ export function PlacePanel({
         <X className="size-5" />
       </button>
       <p className="text-[11px] font-bold tracking-[0.25em] text-accent uppercase">{eyebrow}</p>
-      <h2 className="mt-2 mb-4 font-display text-3xl font-bold text-white">{title}</h2>
+      <h2 className="mt-2 mb-4 font-display text-3xl font-bold text-white [@media(max-height:500px)]:mb-2 [@media(max-height:500px)]:text-2xl">{title}</h2>
       <Body />
     </aside>
   );
