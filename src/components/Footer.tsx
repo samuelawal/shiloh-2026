@@ -28,7 +28,7 @@ export function Footer() {
         <div>
           <h3 className="mb-4 text-sm font-bold tracking-widest text-white uppercase">Quick links</h3>
           <ul className="space-y-2 text-sm">
-            <li><Link href="/register" className="hover:text-white">Register</Link></li>
+            <li><Link href="/simple#ministrations" className="hover:text-white">Past ministrations</Link></li>
             <li><Link href="/simple#programme" className="hover:text-white">Programme</Link></li>
             <li><Link href="/simple#faq" className="hover:text-white">FAQ</Link></li>
             <li><a href={LINKS.website} target="_blank" rel="noreferrer" className="hover:text-white">faithtabernacle.org.ng</a></li>

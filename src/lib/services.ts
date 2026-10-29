@@ -2,7 +2,7 @@
 // Details follow the pattern of previous Shiloh editions; confirm specifics
 // (pick-up points, desk locations, opening times) with the organising team.
 
-export type ServiceId = "accommodation" | "shuttles" | "medical" | "help" | "bookshop";
+export type ServiceId = "shuttles" | "help" | "bookshop";
 
 export type Service = {
   id: ServiceId;
@@ -14,19 +14,6 @@ export type Service = {
 
 export const SERVICES: Service[] = [
   {
-    id: "accommodation",
-    title: "Accommodation",
-    summary:
-      "Hostel and camp spaces in Canaanland are allocated on request, first come, first served. Hotels in Ota and Lagos are an alternative for families.",
-    details: [
-      "Request accommodation when you register",
-      "Check in at the accommodation desk with your delegate pass",
-      "Bring bedding, toiletries and a torch",
-      "Keep valuables to a minimum",
-    ],
-    cta: { label: "Request accommodation", href: "/register" },
-  },
-  {
     id: "shuttles",
     title: "Shuttles",
     summary:
@@ -37,18 +24,6 @@ export const SERVICES: Service[] = [
       "Arrive early: buses leave when full",
       "Driving? Park in the marked car parks and follow the traffic marshals",
     ],
-    cta: { label: "Ask for a shuttle when you register", href: "/register" },
-  },
-  {
-    id: "medical",
-    title: "Medical",
-    summary: "Medical teams and first-aid posts are on hand across the grounds, with ambulances on standby throughout the week.",
-    details: [
-      "Any usher can direct you to the nearest first-aid post",
-      "Bring the medication you need, with a copy of your prescription",
-      "Drink plenty of water during the day",
-      "Note medical or accessibility needs when you register",
-    ],
   },
   {
     id: "help",
@@ -57,9 +32,8 @@ export const SERVICES: Service[] = [
       "Ushers, security and the welcome team are there to receive first-timers, guide you to a seat and keep everyone safe.",
     details: [
       "First time at Shiloh? Start at the welcome and help desk",
-      "Keep your delegate pass with you: it is checked at the gate",
       "Lost property and missing persons are handled at the help desk",
-      "Children must be signed in and out by a parent or guardian",
+      "Foreign delegates: get in touch with the Protocol Help Desk team",
     ],
   },
   {

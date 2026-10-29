@@ -5,7 +5,7 @@ import type { ServiceId } from "@/lib/services";
 
 export type Vec3 = [number, number, number];
 
-export type PlaceId = "ministers" | "programme" | "registration" | "testimonies" | "directions" | ServiceId;
+export type PlaceId = "ministers" | "programme" | "ministrations" | "testimonies" | "directions" | ServiceId;
 
 export type Place = {
   id: PlaceId;
@@ -73,7 +73,8 @@ export const PLACES: Place[] = [
     id: "ministers",
     label: "Ministers",
     anchor: [CORE.x, 34, CORE.z],
-    camera: { position: [80, 150, 150], target: [CORE.x, 0, CORE.z] },
+    // Down the front wing, over the congregation, facing the altar screen.
+    camera: { position: [CORE.x + 24, 29, CORE.z + 56], target: [CORE.x + 13, 18, CORE.z + 8] },
   },
   {
     id: "programme",
@@ -82,10 +83,11 @@ export const PLACES: Place[] = [
     camera: { position: [-340, 150, 60], target: [-80, 10, -47] },
   },
   {
-    id: "registration",
-    label: "Registration",
+    id: "ministrations",
+    label: "Ministrations",
     anchor: [frontX, 32, frontZ],
-    camera: { position: [150, 90, 340], target: [40, 12, 95] },
+    // Close on the altar screen facing the front wing, where past Shiloh ministrations play.
+    camera: { position: [CORE.x + 10, 23, CORE.z + 40], target: [CORE.x + 2, 19, CORE.z + 8] },
   },
   {
     id: "testimonies",
@@ -103,10 +105,8 @@ export const PLACES: Place[] = [
 
 // Practical services, each with its own landmark in Canaanland.
 export const BUS_PARK: Vec3 = [-130, 0, -520];
-export const MEDICAL: Vec3 = [-75, 0, 115];
 export const HELP_DESK: Vec3 = [100, 0, 160];
 export const BOOKSHOP: Vec3 = [-168, 0, -66];
-export const HOSTELS: Vec3 = [-340, 0, 170];
 
 const servicePlace = (id: ServiceId, label: string, at: Vec3, height: number, view: Vec3): Place => ({
   id,
@@ -116,9 +116,7 @@ const servicePlace = (id: ServiceId, label: string, at: Vec3, height: number, vi
 });
 
 export const SERVICE_PLACES: Place[] = [
-  servicePlace("accommodation", "Accommodation", HOSTELS, 32, [150, 130, 190]),
   servicePlace("shuttles", "Shuttles", BUS_PARK, 16, [-150, 85, -40]),
-  servicePlace("medical", "Medical", MEDICAL, 16, [-90, 60, 110]),
   servicePlace("help", "Help desk", HELP_DESK, 16, [90, 55, 100]),
   servicePlace("bookshop", "Bookshop", BOOKSHOP, 18, [-100, 60, 80]),
 ];
@@ -136,10 +134,8 @@ export const CLEARINGS: { x: number; z: number; r: number }[] = [
   { x: frontX, z: frontZ + 30, r: 70 },
   { x: ARK.x, z: ARK.z, r: ARK.radius * ARK.stretch + 20 },
   { x: BUS_PARK[0], z: BUS_PARK[2], r: 70 },
-  { x: MEDICAL[0], z: MEDICAL[2], r: 30 },
   { x: HELP_DESK[0], z: HELP_DESK[2], r: 30 },
   { x: BOOKSHOP[0], z: BOOKSHOP[2], r: 30 },
-  { x: HOSTELS[0], z: HOSTELS[2], r: 110 },
 ];
 
 export type MapData = {

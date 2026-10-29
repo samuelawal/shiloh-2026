@@ -10,11 +10,11 @@ export default function NotFound() {
       <main>
         <PageHeader eyebrow="404" title="Page not found" description="We couldn't find what you were looking for." />
         <div className="container-page flex justify-center gap-3 py-16">
-          <Link href="/" className="btn border border-wine/20 text-wine hover:bg-wine hover:text-white">
+          <Link href="/" className="btn border border-umber/20 text-umber hover:bg-umber hover:text-white">
             Go home
           </Link>
-          <Link href="/register" className="btn-primary">
-            Register
+          <Link href="/simple" className="btn-primary">
+            About Shiloh 2026
           </Link>
         </div>
       </main>

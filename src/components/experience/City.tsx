@@ -16,7 +16,7 @@ import {
 } from "three";
 import { CLEARINGS, type MapData } from "./config";
 
-export const FOG = { color: new Color("#14060b"), near: 900, far: 3800 };
+export const FOG = { color: new Color("#1c0e06"), near: 900, far: 3800 };
 
 const FOG_GLSL = /* glsl */ `
   uniform vec3 uFogColor;
@@ -206,7 +206,7 @@ const roadMaterial = () =>
       varying float vCenter;
       void main() {
         float edge = 1.0 - pow(abs(vCenter * 2.0 - 1.0), 2.0);
-        vec3 glowColor = vec3(1.0, 0.36, 0.24);
+        vec3 glowColor = vec3(1.0, 0.55, 0.2);
         vec3 color = glowColor * vGlow * (0.45 + 0.55 * edge);
         float cars = vTraffic * smoothstep(0.92, 1.0, fract(vAlong / 90.0 - uTime * 0.35));
         cars += vTraffic * smoothstep(0.95, 1.0, fract(vAlong / 140.0 + uTime * 0.22)) * 0.8;
@@ -250,7 +250,7 @@ function Ground() {
           varying float vDist;
           void main() {
             float glow = exp(-length(vXZ) / 420.0);
-            vec3 color = vec3(0.012, 0.006, 0.009) + vec3(0.06, 0.012, 0.012) * glow;
+            vec3 color = vec3(0.014, 0.008, 0.005) + vec3(0.07, 0.03, 0.01) * glow;
             gl_FragColor = vec4(applyFog(color, vDist), 1.0);
           }
         `,
@@ -282,12 +282,16 @@ function Sky() {
           float hash(vec3 p) { return fract(sin(dot(p, vec3(12.9898, 78.233, 37.719))) * 43758.5453); }
           void main() {
             float h = vDir.y;
-            vec3 horizon = vec3(0.7, 0.16, 0.12);
-            vec3 band = vec3(0.22, 0.05, 0.09);
-            vec3 zenith = vec3(0.035, 0.012, 0.03);
-            vec3 color = mix(horizon, band, smoothstep(0.0, 0.12, h));
-            color = mix(color, zenith, smoothstep(0.12, 0.55, h));
-            color = mix(vec3(0.08, 0.025, 0.04), color, smoothstep(-0.05, 0.0, h));
+            // Golden-hour sky from the Shiloh 2026 flyer: amber horizon, low sun, umber above.
+            vec3 horizon = vec3(0.95, 0.5, 0.16);
+            vec3 band = vec3(0.4, 0.15, 0.05);
+            vec3 zenith = vec3(0.05, 0.025, 0.016);
+            vec3 color = mix(horizon, band, smoothstep(0.0, 0.14, h));
+            color = mix(color, zenith, smoothstep(0.14, 0.6, h));
+            vec3 sunDir = normalize(vec3(0.75, 0.04, -0.66));
+            float sun = max(dot(vDir, sunDir), 0.0);
+            color += vec3(1.0, 0.72, 0.36) * (pow(sun, 18.0) * 0.9 + pow(sun, 400.0) * 1.6);
+            color = mix(vec3(0.1, 0.045, 0.02), color, smoothstep(-0.05, 0.0, h));
             vec3 cell = floor(vDir * 420.0);
             float star = step(0.9975, hash(cell)) * smoothstep(0.08, 0.4, h);
             color += vec3(1.0, 0.95, 0.85) * star * 0.8;

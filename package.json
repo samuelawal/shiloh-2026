@@ -9,20 +9,15 @@
     "lint": "eslint"
   },
   "dependencies": {
-    "@hookform/resolvers": "^6.0.2",
     "@react-three/drei": "^10.7.9",
     "@react-three/fiber": "^9.8.2",
     "@react-three/postprocessing": "^3.2.2",
     "lucide-react": "^1.63.0",
     "next": "15.5.28",
     "postprocessing": "^6.39.5",
-    "qrcode.react": "^4.2.0",
     "react": "19.1.0",
     "react-dom": "19.1.0",
-    "react-hook-form": "^7.91.0",
-    "server-only": "^0.0.1",
-    "three": "^0.186.1",
-    "zod": "^4.6.7"
+    "three": "^0.186.1"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",

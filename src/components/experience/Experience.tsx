@@ -4,6 +4,7 @@ import { Volume2, VolumeX } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { FarAbove, ShilohMark } from "@/components/Brand";
 import { EVENT, LINKS } from "@/lib/event";
 import {
   loadMap,
@@ -20,7 +21,7 @@ import { Soundtrack } from "./soundtrack";
 import { type Cue, PILLAR_DELAYS } from "./timeline";
 
 const year = EVENT.name.slice(-2);
-const shortDates = "8–13 December 2026";
+const shortDates = "8th – 13th Dec. 2026";
 
 function supportsWebGL() {
   try {
@@ -49,10 +50,10 @@ function Captions({ cue }: { cue: Cue | null }) {
       <div
         key={cue}
         className="absolute top-1/2 left-6 max-w-xl -translate-y-1/2 sm:left-24">
-        <p className="caption-in font-display text-2xl font-bold text-white sm:text-4xl">
+        <p className="caption-in font-display text-3xl text-white uppercase sm:text-5xl">
           {lines[0]}
         </p>
-        <p className="caption-in font-display text-2xl font-bold text-accent [animation-delay:0.5s] sm:text-4xl">
+        <p className="caption-in font-display text-3xl text-accent uppercase [animation-delay:0.5s] sm:text-5xl">
           {lines[1]}
         </p>
         <p className="caption-in mt-2 text-sm font-semibold text-white [animation-delay:1s] sm:text-base">
@@ -67,7 +68,7 @@ function Captions({ cue }: { cue: Cue | null }) {
         <p className="caption-in text-xs font-bold tracking-[0.35em] text-accent uppercase">
           The altar is set
         </p>
-        <p className="caption-in glow-text mt-3 font-display text-5xl font-black text-white [animation-delay:0.3s] sm:text-7xl">
+        <p className="caption-in glow-text mt-3 font-display text-6xl text-white uppercase [animation-delay:0.3s] sm:text-8xl">
           Faith Tabernacle
         </p>
       </div>
@@ -95,17 +96,18 @@ function Captions({ cue }: { cue: Cue | null }) {
 function TitleBlock({ explore }: { explore: boolean }) {
   return (
     <div className="pointer-events-none absolute top-20 left-4 max-w-[90vw] sm:top-28 sm:left-16 [@media(max-height:500px)]:hidden">
-      <p className="caption-in text-[10px] font-bold tracking-[0.2em] text-accent uppercase sm:text-[11px] sm:tracking-[0.3em]">
+      <p className="caption-in flex items-center gap-3 text-[10px] font-bold tracking-[0.2em] text-accent uppercase sm:text-[11px] sm:tracking-[0.3em]">
+        <ShilohMark className="size-10 text-[14px] tracking-normal text-cream normal-case sm:size-12 sm:text-[17px]" />
         {EVENT.host}
       </p>
-      <h1 className="caption-in glow-text mt-2 font-display text-4xl leading-none font-black whitespace-nowrap text-white [animation-delay:0.2s] sm:text-8xl">
-        SHILOH <span className="text-accent">’{year}</span>
+      <h1 className="caption-in glow-text mt-3 text-cream [animation-delay:0.2s]">
+        <FarAbove className="text-6xl sm:text-9xl" />
       </h1>
-      <p className="caption-in mt-2 font-display text-lg font-bold text-accent-soft italic [animation-delay:0.4s] sm:mt-3 sm:text-3xl">
-        “{EVENT.theme}”
+      <p className="caption-in mt-2 font-display text-lg tracking-[0.3em] text-accent [animation-delay:0.4s] sm:mt-3 sm:text-2xl">
+        EPH. 1:20–21
       </p>
-      <p className="caption-in mt-1 text-xs text-white [animation-delay:0.6s] sm:mt-2 sm:text-base">
-        {shortDates} · {EVENT.venue.name}, Ota
+      <p className="caption-in mt-1 text-xs font-semibold tracking-wide text-white uppercase [animation-delay:0.6s] sm:mt-2 sm:text-sm">
+        {shortDates} · {EVENT.timesLabel} · {EVENT.venue.name}
       </p>
       {explore && (
         <p className="caption-in mt-4 hidden text-xs text-white [animation-delay:1s] sm:block">
@@ -125,6 +127,7 @@ export default function Experience() {
   const [activePlace, setActivePlace] = useState<PlaceId | null>(null);
   const [panelOpen, setPanelOpen] = useState(false);
   const [muted, setMuted] = useState(false);
+  const [playing, setPlaying] = useState<string | null>(null);
   const [trackTitle, setTrackTitle] = useState<string | null>(null);
   const [audioReady, setAudioReady] = useState(false);
   const [webgl, setWebgl] = useState(true);
@@ -194,20 +197,29 @@ export default function Experience() {
   const selectPlace = (id: PlaceId | null) => {
     setActivePlace(id);
     setPanelOpen(id !== null);
+    // Leaving the screen stops the ministration.
+    if (id !== "ministrations") setPlaying(null);
   };
 
-  const toggleMute = () => {
-    setMuted((m) => {
-      soundtrack.current?.setMuted(!m);
-      return !m;
-    });
+  const playMinistration = (id: string) => {
+    setPlaying(id);
+    // Below laptop width the panel covers the screen, so get it out of the way.
+    // Tapping Ministrations again brings the list back.
+    if (!window.matchMedia("(min-width: 1280px)").matches) setPanelOpen(false);
   };
+
+  // The soundtrack steps aside while a ministration plays on the altar screen.
+  useEffect(() => {
+    soundtrack.current?.setMuted(muted || playing !== null);
+  }, [muted, playing]);
+
+  const toggleMute = () => setMuted((m) => !m);
 
   if (!webgl) {
     return (
-      <div className="grid min-h-dvh place-items-center bg-[#07060b] px-6 text-center text-white">
+      <div className="grid min-h-dvh place-items-center bg-[#0f0805] px-6 text-center text-white">
         <div>
-          <h1 className="font-display text-4xl font-black">Shiloh 2026</h1>
+          <h1 className="font-display text-5xl uppercase">Shiloh 2026</h1>
           <p className="mt-3 text-white">
             Your browser can&apos;t show the 3D experience.
           </p>
@@ -220,7 +232,7 @@ export default function Experience() {
   }
 
   return (
-    <div className="fixed inset-0 overflow-hidden bg-[#07060b] text-white select-none">
+    <div className="fixed inset-0 overflow-hidden bg-[#0f0805] text-white select-none">
       <div
         className={`absolute inset-0 transition-[filter] duration-[1500ms] ${
           phase === "gate" ? "scale-105 blur-md brightness-50" : ""
@@ -231,6 +243,7 @@ export default function Experience() {
             phase={phase}
             introStartedAt={introStartedAt}
             activePlace={activePlace}
+            playing={playing}
             lowPower={lowPower}
             onCue={onCue}
             onIntroEnd={finishIntro}
@@ -257,9 +270,7 @@ export default function Experience() {
                 unoptimized
               />
             </span>
-            <span className="hidden text-sm tracking-wide sm:block">
-              SHILOH <span className="text-accent">’{year}</span>
-            </span>
+            <ShilohMark className="hidden size-10 text-[14px] sm:inline-grid" />
           </Link>
           <div className="flex items-center gap-2">
             {phase !== "gate" && (
@@ -271,7 +282,7 @@ export default function Experience() {
                   className="hidden rounded-full border border-white/15 bg-black/30 px-4 py-2 text-sm backdrop-blur hover:bg-white/10 sm:block">
                   Give
                 </a>
-                {trackTitle && (
+                {trackTitle && !playing && (
                   <span className="hidden items-center gap-2 rounded-full border border-white/15 bg-black/30 px-4 py-2 text-sm backdrop-blur md:flex">
                     <span className="text-[10px] tracking-widest text-white uppercase">
                       Now playing
@@ -292,11 +303,13 @@ export default function Experience() {
                 </button>
               </>
             )}
-            <Link
-              href="/register"
+            <a
+              href={LINKS.youtube}
+              target="_blank"
+              rel="noreferrer"
               className="rounded-full bg-[#fff4e6] px-4 py-2 text-sm font-semibold text-black hover:bg-white">
-              Register
-            </Link>
+              Watch live
+            </a>
           </div>
         </header>
 
@@ -306,23 +319,24 @@ export default function Experience() {
             <p className="caption-in absolute top-20 px-4 text-[10px] tracking-[0.2em] text-accent uppercase sm:top-24 sm:text-xs sm:tracking-[0.3em] [@media(max-height:500px)]:hidden">
               Shiloh ’{year} · {shortDates} · Canaanland, Ota
             </p>
-            <h1 className="caption-in font-display text-5xl leading-[1.05] font-black text-[#fff4e6] sm:text-7xl md:text-8xl">
-              Are you ready
-              <br />
-              to go <span className="glow-text text-accent">far above?</span>
+            <h1 className="caption-in glow-text text-cream">
+              <FarAbove className="text-[22vw] sm:text-9xl md:text-[10rem] [@media(max-height:500px)]:text-7xl" />
             </h1>
+            <p className="caption-in mt-4 font-display text-xl tracking-wide text-accent uppercase [animation-delay:0.2s] sm:text-3xl">
+              Are you ready to go far above?
+            </p>
             <button
               type="button"
               onClick={start}
               disabled={starting}
-              className="caption-in relative mt-10 min-w-56 overflow-hidden rounded-full border border-flame/80 bg-black/60 px-8 py-4 text-base text-white shadow-[0_0_40px_rgba(215,20,30,0.35)] transition [animation-delay:0.3s] hover:shadow-[0_0_60px_rgba(215,20,30,0.6)]">
+              className="caption-in relative mt-10 min-w-56 overflow-hidden rounded-full border border-sun/80 bg-black/60 px-8 py-4 text-base text-white shadow-[0_0_40px_rgba(232,112,20,0.35)] transition [animation-delay:0.3s] hover:shadow-[0_0_60px_rgba(232,112,20,0.6)]">
               {starting
                 ? `Preparing the altar… ${Math.round(progress * 100)}%`
                 : "Yes, I’m ready"}
               {starting && (
                 <span className="absolute inset-x-6 bottom-2 h-0.5 rounded bg-white/10">
                   <span
-                    className="block h-full rounded bg-flame transition-[width]"
+                    className="block h-full rounded bg-sun transition-[width]"
                     style={{ width: `${progress * 100}%` }}
                   />
                 </span>
@@ -361,10 +375,12 @@ export default function Experience() {
         {/* Explore */}
         {phase === "explore" && (
           <>
-            {!panelOpen && <TitleBlock explore />}
+            {!panelOpen && !playing && <TitleBlock explore />}
             {panelOpen && activePlace && (
               <PlacePanel
                 place={activePlace}
+                playing={playing}
+                onPlay={playMinistration}
                 onSelect={selectPlace}
                 onClose={() => setPanelOpen(false)}
               />
@@ -390,7 +406,7 @@ export default function Experience() {
                   onClick={() => selectPlace(p.id)}
                   className={`shrink-0 rounded-full px-4 py-2 text-sm transition ${
                     activePlace === p.id
-                      ? "bg-flame text-white shadow-[0_0_20px_rgba(215,38,30,0.6)]"
+                      ? "bg-sun text-white shadow-[0_0_20px_rgba(232,112,20,0.6)]"
                       : "text-white hover:text-white"
                   }`}>
                   {p.label}
@@ -401,7 +417,7 @@ export default function Experience() {
                 onClick={() => selectPlace("help")}
                 className={`shrink-0 rounded-full px-4 py-2 text-sm transition ${
                   activePlace && SERVICE_IDS.has(activePlace)
-                    ? "bg-flame text-white shadow-[0_0_20px_rgba(215,38,30,0.6)]"
+                    ? "bg-sun text-white shadow-[0_0_20px_rgba(232,112,20,0.6)]"
                     : "text-white hover:text-white"
                 }`}>
                 Services

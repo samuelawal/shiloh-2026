@@ -13,6 +13,7 @@ import { Entrances } from "./Entrances";
 import { Grounds } from "./Grounds";
 import { Orb, type OrbState } from "./Orb";
 import { Services } from "./Services";
+import { StageScreens } from "./StageScreen";
 import { Tabernacle, type TabernacleState } from "./Tabernacle";
 import { type Cue, cameraAt, cueAt, INTRO_DURATION, orbAt, roofOpacityAt } from "./timeline";
 
@@ -23,6 +24,8 @@ export type SceneProps = {
   phase: Phase;
   introStartedAt: RefObject<number>;
   activePlace: PlaceId | null;
+  /** YouTube id of the ministration playing on the altar screen. */
+  playing: string | null;
   lowPower: boolean;
   onCue: (cue: Cue | null, time: number) => void;
   onIntroEnd: () => void;
@@ -103,7 +106,7 @@ function Director({
     }
 
     orb.current.visible = false;
-    const roofGoal = activePlace === "ministers" ? 0 : 1;
+    const roofGoal = activePlace === "ministers" || activePlace === "ministrations" ? 0 : 1;
     tabernacle.current.roofOpacity = MathUtils.lerp(tabernacle.current.roofOpacity, roofGoal, 0.06);
 
     const f = flight.current;
@@ -132,7 +135,7 @@ function Hotspot({ place, active, hint, onSelect }: { place: Place; active: bool
         aria-label={place.label}
         className={`group flex items-center gap-2 rounded-full border p-2 text-sm font-semibold whitespace-nowrap backdrop-blur-md transition sm:px-3 sm:py-1.5 ${
           active
-            ? "border-accent/80 bg-flame/90 text-white shadow-[0_0_30px_rgba(215,20,30,0.7)]"
+            ? "border-accent/80 bg-sun/90 text-white shadow-[0_0_30px_rgba(232,112,20,0.7)]"
             : "border-white/15 bg-black/45 text-white hover:border-accent/60 hover:text-white"
         }`}
       >
@@ -142,14 +145,14 @@ function Hotspot({ place, active, hint, onSelect }: { place: Place; active: bool
         </span>
         {/* On phones only the active place shows its name; the menu below names the rest. */}
         <span className={active ? "pr-1" : "hidden sm:inline [@media(max-height:500px)]:hidden"}>{place.label}</span>
-        {hint && !active && <span className="hidden rounded-full bg-flame px-2 py-0.5 text-xs text-white sm:inline [@media(max-height:500px)]:hidden">Click to open →</span>}
+        {hint && !active && <span className="hidden rounded-full bg-sun px-2 py-0.5 text-xs text-white sm:inline [@media(max-height:500px)]:hidden">Click to open →</span>}
       </button>
     </Html>
   );
 }
 
 export function Scene(props: SceneProps) {
-  const { map, phase, activePlace, lowPower, onSelectPlace } = props;
+  const { map, phase, activePlace, playing, lowPower, onSelectPlace } = props;
   const tabernacle = useRef<TabernacleState>({ roofOpacity: 1 });
   const orb = useRef<OrbState>({ position: new Vector3(), visible: false });
 
@@ -168,6 +171,7 @@ export function Scene(props: SceneProps) {
       <Entrances />
       <Services />
       <Tabernacle state={tabernacle} crowdSpacing={lowPower ? 2.6 : 1.55} />
+      <StageScreens lowPower={lowPower} playing={playing} />
       <Orb state={orb} />
 
       <OrbitControls

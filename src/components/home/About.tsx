@@ -22,8 +22,8 @@ export function About() {
           </p>
 
           <figure className="mt-8 rounded-2xl border-l-4 border-accent bg-white p-6 shadow-sm">
-            <p className="text-xs font-bold tracking-widest text-flame uppercase">This year&apos;s theme · {EVENT.theme}</p>
-            <blockquote className="mt-3 font-display text-xl leading-snug text-ink italic">
+            <p className="text-xs font-bold tracking-widest text-sun uppercase">This year&apos;s theme · {EVENT.theme}</p>
+            <blockquote className="mt-3 text-lg leading-relaxed font-semibold text-ink">
               &ldquo;{EVENT.scripture.text}&rdquo;
             </blockquote>
             <figcaption className="mt-3 text-sm font-semibold text-muted">— {EVENT.scripture.reference}</figcaption>
@@ -32,7 +32,7 @@ export function About() {
           <ul className="mt-8 grid gap-5 sm:grid-cols-3">
             {HIGHLIGHTS.map(({ icon: Icon, title, text }) => (
               <li key={title}>
-                <Icon className="size-6 text-flame" />
+                <Icon className="size-6 text-sun" />
                 <h3 className="mt-2 font-bold">{title}</h3>
                 <p className="mt-1 text-sm leading-relaxed text-muted">{text}</p>
               </li>
@@ -41,7 +41,7 @@ export function About() {
         </div>
 
         <div className="relative">
-          <div className="absolute -inset-3 -z-10 rotate-2 rounded-3xl bg-gradient-to-br from-accent/40 to-flame/30" aria-hidden />
+          <div className="absolute -inset-3 -z-10 rotate-2 rounded-3xl bg-gradient-to-br from-accent/40 to-sun/30" aria-hidden />
           <Image
             src="/images/canaanland.jpg"
             alt="The entrance gate to Canaanland, Ota — home of Faith Tabernacle"

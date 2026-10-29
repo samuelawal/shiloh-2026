@@ -49,9 +49,9 @@ export function Embers({ density = 1 }: { density?: number }) {
         const fade = Math.sin(Math.PI * Math.min(1, e.life / e.max));
         if (e.life > e.max || e.y < -10) embers[i] = spawn(false);
         const g = ctx.createRadialGradient(e.x, e.y, 0, e.x, e.y, e.r * 4);
-        g.addColorStop(0, `rgba(255, 196, 186, ${0.9 * fade})`);
-        g.addColorStop(0.4, `rgba(230, 40, 48, ${0.4 * fade})`);
-        g.addColorStop(1, "rgba(212, 17, 28, 0)");
+        g.addColorStop(0, `rgba(255, 228, 180, ${0.9 * fade})`);
+        g.addColorStop(0.4, `rgba(245, 140, 40, ${0.4 * fade})`);
+        g.addColorStop(1, "rgba(201, 83, 11, 0)");
         ctx.fillStyle = g;
         ctx.beginPath();
         ctx.arc(e.x, e.y, e.r * 4, 0, Math.PI * 2);

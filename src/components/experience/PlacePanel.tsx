@@ -1,27 +1,39 @@
 "use client";
 
-import { ArrowRight, BookOpen, Bus, Clock, HeartPulse, Hotel, type LucideIcon, MapPin, Plane, Users, X } from "lucide-react";
+import { ArrowRight, BookOpen, Bus, Clock, type LucideIcon, MapPin, Plane, Play, Users, X } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
-import { EVENT, LINKS, MINISTERS, PROGRAMME } from "@/lib/event";
+import { MinisterAvatar } from "@/components/MinisterAvatar";
+import { EVENT, HOST, LINKS, MINISTERS, PHOTO_CREDITS, PROGRAMME } from "@/lib/event";
+import { MINISTRATIONS, thumbnail, watchUrl } from "@/lib/ministrations";
 import { SERVICES, type ServiceId } from "@/lib/services";
 import { type PlaceId, SERVICE_IDS } from "./config";
 
 function Ministers() {
   return (
     <>
-      <p>
-        Shiloh is convened by {EVENT.convener} with senior ministers of the Commission. Expect the prophetic Word, worship
-        and impartation at the altar of Faith Tabernacle.
-      </p>
-      <ul className="mt-5 space-y-2.5">
-        {MINISTERS.map((m) => (
-          <li key={m.name} className="rounded-xl border border-white/10 bg-white/5 px-4 py-3">
-            <p className="font-semibold text-white">{m.name}</p>
-            <p className="text-xs text-white">{m.role}</p>
+      <div className="flex items-center gap-4">
+        <MinisterAvatar minister={HOST} size={84} className="ring-2 ring-accent/70" />
+        <div>
+          <p className="text-[10px] font-bold tracking-[0.3em] text-accent uppercase">Host</p>
+          <p className="font-display text-xl leading-tight text-white uppercase">{HOST.name}</p>
+          <p className="text-xs text-accent-soft">{HOST.role}</p>
+        </div>
+      </div>
+      <p className="mt-4">{HOST.bio}</p>
+      <p className="mt-6 text-[11px] font-bold tracking-[0.25em] text-accent uppercase">Ministering</p>
+      <ul className="mt-3 grid grid-cols-2 gap-2.5">
+        {MINISTERS.slice(1).map((m) => (
+          <li key={m.name} className="flex flex-col items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-2 py-4 text-center">
+            <MinisterAvatar minister={m} size={64} />
+            <p className="text-xs leading-snug font-semibold text-white">{m.name}</p>
           </li>
         ))}
       </ul>
+      <p className="mt-4 text-[10px] text-white/60">
+        Photos: Wikimedia Commons ({PHOTO_CREDITS.map((c) => c.author).join(", ")}), CC BY-SA 4.0
+      </p>
     </>
   );
 }
@@ -41,7 +53,7 @@ function Programme() {
             type="button"
             onClick={() => setDay(i)}
             className={`shrink-0 rounded-full px-3 py-1.5 text-xs font-bold transition ${
-              i === day ? "bg-flame text-white" : "bg-white/10 text-white hover:bg-white/15"
+              i === day ? "bg-sun text-white" : "bg-white/10 text-white hover:bg-white/15"
             }`}
           >
             {d.day}
@@ -68,20 +80,54 @@ function Programme() {
   );
 }
 
-function Registration() {
+function Ministrations({ playing, onPlay }: { playing: string | null; onPlay: (id: string) => void }) {
+  const years = [...new Set(MINISTRATIONS.map((m) => m.year))];
   return (
     <>
-      <p>Registration and admission are free. Register in two minutes and get a delegate pass with a QR code for the gate.</p>
-      <ul className="mt-5 space-y-2 text-sm">
-        {["Personal delegate pass with QR code", "Accommodation and shuttle requests", "Updates before and during Shiloh"].map((item) => (
-          <li key={item} className="flex items-center gap-2">
-            <span className="size-1.5 rounded-full bg-accent" /> {item}
-          </li>
-        ))}
-      </ul>
-      <Link href="/register" className="btn-primary mt-7 w-full">
-        Register free <ArrowRight className="size-4" />
-      </Link>
+      <p>
+        Relive past Shiloh services from Faith Tabernacle. Choose a ministration and it plays on the altar screen, or
+        open it on YouTube.
+      </p>
+      {years.map((year) => (
+        <section key={year} className="mt-5">
+          <p className="text-[11px] font-bold tracking-[0.25em] text-accent uppercase">
+            Shiloh {year} · {MINISTRATIONS.find((m) => m.year === year)!.theme}
+          </p>
+          <ul className="mt-2 space-y-2">
+            {MINISTRATIONS.filter((m) => m.year === year).map((m) => {
+              const active = playing === m.id;
+              return (
+                <li key={m.id}>
+                  <button
+                    type="button"
+                    onClick={() => onPlay(m.id)}
+                    aria-pressed={active}
+                    className={`flex w-full items-center gap-3 rounded-xl border p-2 text-left transition ${
+                      active ? "border-accent bg-accent/15" : "border-white/10 bg-white/5 hover:border-white/30"
+                    }`}
+                  >
+                    <span className="relative aspect-video w-24 shrink-0 overflow-hidden rounded-lg bg-black">
+                      <Image src={thumbnail(m.id)} alt="" fill sizes="96px" className="object-cover" />
+                      <span className="absolute inset-0 grid place-items-center bg-black/30">
+                        <Play className="size-5 fill-white text-white" />
+                      </span>
+                    </span>
+                    <span>
+                      <span className="block text-sm leading-snug font-semibold text-white">{m.title}</span>
+                      <span className="text-xs text-accent-soft">{active ? "Now playing on the altar screen" : m.date}</span>
+                    </span>
+                  </button>
+                </li>
+              );
+            })}
+          </ul>
+        </section>
+      ))}
+      {playing && (
+        <a href={watchUrl(playing)} target="_blank" rel="noreferrer" className="btn-primary mt-6 w-full">
+          Watch on YouTube <ArrowRight className="size-4" />
+        </a>
+      )}
     </>
   );
 }
@@ -129,9 +175,7 @@ function Directions() {
 }
 
 export const SERVICE_ICONS: Record<ServiceId, LucideIcon> = {
-  accommodation: Hotel,
   shuttles: Bus,
-  medical: HeartPulse,
   help: Users,
   bookshop: BookOpen,
 };
@@ -152,7 +196,7 @@ function Services({ active, onSelect }: { active: ServiceId; onSelect: (id: Serv
               aria-selected={s.id === active}
               onClick={() => onSelect(s.id)}
               className={`inline-flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-bold transition ${
-                s.id === active ? "bg-flame text-white" : "bg-white/10 text-white hover:bg-white/15"
+                s.id === active ? "bg-sun text-white" : "bg-white/10 text-white hover:bg-white/15"
               }`}
             >
               <TabIcon className="size-3.5" /> {s.title}
@@ -180,21 +224,24 @@ function Services({ active, onSelect }: { active: ServiceId; onSelect: (id: Serv
   );
 }
 
-const CONTENT: Record<Exclude<PlaceId, ServiceId>, { eyebrow: string; title: string; body: () => React.ReactNode }> = {
+const CONTENT: Record<Exclude<PlaceId, ServiceId | "ministrations">, { eyebrow: string; title: string; body: () => React.ReactNode }> = {
   ministers: { eyebrow: "At the altar", title: "Ministers", body: Ministers },
   programme: { eyebrow: "Six days", title: "Programme", body: Programme },
-  registration: { eyebrow: "Free admission", title: "Registration", body: Registration },
   testimonies: { eyebrow: "Honour Entrance", title: "Testimonies", body: Testimonies },
   directions: { eyebrow: "Getting here", title: "Directions", body: Directions },
 };
 
 export function PlacePanel({
   place,
+  playing,
   onSelect,
+  onPlay,
   onClose,
 }: {
   place: PlaceId;
+  playing: string | null;
   onSelect: (id: PlaceId) => void;
+  onPlay: (id: string) => void;
   onClose: () => void;
 }) {
   const isService = SERVICE_IDS.has(place);
@@ -204,13 +251,19 @@ export function PlacePanel({
         title: "Services",
         body: () => <Services active={place as ServiceId} onSelect={onSelect} />,
       }
-    : CONTENT[place as Exclude<PlaceId, ServiceId>];
+    : place === "ministrations"
+      ? {
+          eyebrow: "Past Shiloh",
+          title: "Ministrations",
+          body: () => <Ministrations playing={playing} onPlay={onPlay} />,
+        }
+      : CONTENT[place as Exclude<PlaceId, ServiceId | "ministrations">];
   return (
     <aside
       key={isService ? "services" : place}
       role="dialog"
       aria-label={title}
-      className="animate-panel-in pointer-events-auto absolute inset-x-3 bottom-24 max-h-[62vh] overflow-y-auto rounded-3xl border border-white/10 bg-[#0b0a10]/80 p-6 text-sm leading-relaxed text-white shadow-2xl backdrop-blur-xl sm:inset-x-auto sm:top-24 sm:right-6 sm:bottom-auto sm:max-h-[calc(100dvh-13rem)] sm:w-[400px] [@media(max-height:500px)]:top-[4.5rem] [@media(max-height:500px)]:max-h-[calc(100dvh-9rem)] [@media(max-height:500px)]:p-4"
+      className="animate-panel-in pointer-events-auto absolute inset-x-3 bottom-24 max-h-[62vh] overflow-y-auto rounded-3xl border border-white/10 bg-[#140a05]/80 p-6 text-sm leading-relaxed text-white shadow-2xl backdrop-blur-xl sm:inset-x-auto sm:top-24 sm:right-6 sm:bottom-auto sm:max-h-[calc(100dvh-13rem)] sm:w-[400px] [@media(max-height:500px)]:top-[4.5rem] [@media(max-height:500px)]:max-h-[calc(100dvh-9rem)] [@media(max-height:500px)]:p-4"
     >
       <button
         type="button"
@@ -221,7 +274,7 @@ export function PlacePanel({
         <X className="size-5" />
       </button>
       <p className="text-[11px] font-bold tracking-[0.25em] text-accent uppercase">{eyebrow}</p>
-      <h2 className="mt-2 mb-4 font-display text-3xl font-bold text-white [@media(max-height:500px)]:mb-2 [@media(max-height:500px)]:text-2xl">{title}</h2>
+      <h2 className="mt-2 mb-4 font-display text-3xl text-white uppercase [@media(max-height:500px)]:mb-2 [@media(max-height:500px)]:text-2xl">{title}</h2>
       <Body />
     </aside>
   );

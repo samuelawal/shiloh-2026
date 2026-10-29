@@ -13,7 +13,7 @@ export function Faq() {
             <details key={faq.question} className="group rounded-2xl border border-black/10 bg-cream px-6 py-5 open:bg-white open:shadow-sm">
               <summary className="flex cursor-pointer list-none items-center justify-between gap-4 font-bold [&::-webkit-details-marker]:hidden">
                 {faq.question}
-                <ChevronDown className="size-5 shrink-0 text-flame transition group-open:rotate-180" />
+                <ChevronDown className="size-5 shrink-0 text-sun transition group-open:rotate-180" />
               </summary>
               <p className="mt-3 text-sm leading-relaxed text-muted">{faq.answer}</p>
             </details>

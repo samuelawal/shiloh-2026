@@ -1,24 +1,27 @@
 @import "tailwindcss";
 
 @theme {
-  /* Winners red */
-  --color-night: #16040a;
-  --color-wine: #5a0b16;
-  --color-ruby: #e0313c;
-  --color-flame: #d4111c;
-  --color-flame-dark: #9e0c14;
-  --color-accent: #ff6b6b;
-  --color-accent-soft: #ffb4ae;
-  --color-cream: #fdf7f5;
-  --color-ink: #1d1214;
-  --color-muted: #6b5a5d;
+  /* Shiloh 2026 "Far Above" flyer: sunset over the cliff */
+  --color-night: #140a05;
+  --color-umber: #3d1f0e;
+  --color-amber: #f5a524;
+  --color-sun: #c9530b;
+  --color-sun-dark: #95390a;
+  --color-accent: #ffb547;
+  --color-accent-soft: #ffd9a3;
+  --color-cream: #f6efe3;
+  --color-ink: #2a221d;
+  --color-muted: #6b5d52;
 
   --font-sans: var(--font-manrope);
-  --font-display: var(--font-fraunces);
+  --font-display: var(--font-anton);
+  --font-script: var(--font-kaushan);
 }
 
 html {
   scroll-behavior: smooth;
+  /* Anton ships one upright weight; never fake bold or italic. */
+  font-synthesis: none;
 }
 
 body {
@@ -32,11 +35,11 @@ body {
 }
 
 @utility eyebrow {
-  @apply text-xs font-bold tracking-[0.25em] text-flame uppercase;
+  @apply text-xs font-bold tracking-[0.25em] text-sun uppercase;
 }
 
 @utility heading {
-  @apply font-display text-3xl leading-tight font-semibold text-ink sm:text-4xl md:text-5xl;
+  @apply font-display text-4xl leading-none text-ink uppercase sm:text-5xl md:text-6xl;
 }
 
 @utility btn {
@@ -44,7 +47,7 @@ body {
 }
 
 @utility btn-primary {
-  @apply btn bg-flame text-white shadow-lg shadow-flame/25 hover:bg-flame-dark focus-visible:outline-flame;
+  @apply btn bg-sun text-white shadow-lg shadow-sun/25 hover:bg-sun-dark focus-visible:outline-sun;
 }
 
 @utility btn-outline {
@@ -60,30 +63,44 @@ body {
 }
 
 @utility field-input {
-  @apply w-full rounded-xl border border-black/10 bg-white px-4 py-3 text-sm text-ink outline-none transition placeholder:text-muted/60 focus:border-ruby focus:ring-4 focus:ring-ruby/15;
+  @apply w-full rounded-xl border border-black/10 bg-white px-4 py-3 text-sm text-ink outline-none transition placeholder:text-muted/60 focus:border-amber focus:ring-4 focus:ring-amber/15;
 }
 
 @utility field-error {
-  @apply mt-1 text-xs font-medium text-flame;
+  @apply mt-1 text-xs font-medium text-sun;
 }
 
+/* Dusk version of the flyer sky, for dark sections with light text. */
 .sky-gradient {
   background:
-    radial-gradient(ellipse 80% 60% at 50% 110%, rgb(212 17 28 / 0.45), transparent 60%),
-    radial-gradient(ellipse 60% 50% at 80% 0%, rgb(255 107 107 / 0.22), transparent 70%),
-    linear-gradient(180deg, var(--color-night) 0%, var(--color-wine) 65%, #8a0f1c 100%);
+    radial-gradient(ellipse 70% 55% at 85% 105%, rgb(255 181 71 / 0.55), transparent 65%),
+    radial-gradient(ellipse 60% 50% at 10% 0%, rgb(201 83 11 / 0.25), transparent 70%),
+    linear-gradient(180deg, var(--color-night) 0%, var(--color-umber) 60%, #7a330c 100%);
 }
 
-.stars {
-  background-image:
-    radial-gradient(1px 1px at 20% 30%, white, transparent),
-    radial-gradient(1px 1px at 70% 20%, white, transparent),
-    radial-gradient(1.5px 1.5px at 40% 70%, white, transparent),
-    radial-gradient(1px 1px at 85% 60%, white, transparent),
-    radial-gradient(1px 1px at 10% 80%, white, transparent),
-    radial-gradient(1.5px 1.5px at 55% 15%, white, transparent);
-  background-size: 400px 400px;
-  opacity: 0.5;
+/* The flyer itself: hazy cream sky with the sun low on the right... */
+.flyer-sky {
+  background:
+    radial-gradient(circle at 88% 78%, rgb(255 236 190 / 0.95), rgb(255 190 92 / 0.5) 14%, transparent 40%),
+    linear-gradient(180deg, #efe4d1 0%, #eedbb7 35%, #efb25e 75%, #e3893a 100%);
+}
+
+/* ...falling away to burnt earth, where the details sit in cream. */
+.flyer-earth {
+  background: linear-gradient(180deg, #e3893a 0%, #b8551a 22%, #6e2c0c 58%, var(--color-night) 100%);
+}
+
+/* Print-style halftone dots, as on the flyer. */
+.halftone {
+  background-image: radial-gradient(rgb(42 34 29 / 0.28) 0.9px, transparent 1.4px);
+  background-size: 5px 5px;
+  mask-image: linear-gradient(200deg, black, transparent 55%);
+}
+
+.halftone-light {
+  background-image: radial-gradient(rgb(255 236 200 / 0.16) 0.9px, transparent 1.4px);
+  background-size: 5px 5px;
+  mask-image: linear-gradient(160deg, black, transparent 60%);
 }
 
 @keyframes caption-in {
@@ -120,8 +137,8 @@ body {
 
 .glow-text {
   text-shadow:
-    0 0 18px rgb(255 80 80 / 0.55),
-    0 0 48px rgb(212 17 28 / 0.4);
+    0 0 18px rgb(255 181 71 / 0.55),
+    0 0 48px rgb(201 83 11 / 0.45);
 }
 
 @media (prefers-reduced-motion: reduce) {

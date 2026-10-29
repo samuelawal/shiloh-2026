@@ -36,7 +36,7 @@ export function Countdown({ to }: { to: string }) {
     <div className="grid grid-cols-4 gap-2 sm:gap-3" role="timer" aria-label="Time until Shiloh 2026 begins">
       {units.map(([label, value]) => (
         <div key={label} className="rounded-2xl border border-white/15 bg-white/10 px-2 py-3 text-center backdrop-blur sm:px-5 sm:py-4">
-          <div className="font-display text-2xl font-semibold text-white tabular-nums sm:text-4xl">
+          <div className="font-display text-2xl text-white tabular-nums sm:text-4xl">
             {value === undefined ? "--" : String(value).padStart(2, "0")}
           </div>
           <div className="mt-1 text-[10px] font-bold tracking-widest text-white uppercase sm:text-xs">{label}</div>

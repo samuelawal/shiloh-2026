@@ -1,8 +1,8 @@
 "use client";
 
 import { useLayoutEffect, useMemo, useRef } from "react";
-import { CanvasTexture, Color, type InstancedMesh, Object3D, RepeatWrapping, SRGBColorSpace } from "three";
-import { BOOKSHOP, BUS_PARK, HELP_DESK, HOSTELS, MEDICAL, type Vec3 } from "./config";
+import { Color, type InstancedMesh, Object3D } from "three";
+import { BOOKSHOP, BUS_PARK, HELP_DESK, type Vec3 } from "./config";
 import { useSignTexture } from "./Entrances";
 
 /** A sign board on two posts, facing +z. */
@@ -87,57 +87,6 @@ function BusPark() {
   );
 }
 
-// ---------- Medical: first-aid tent and ambulance ---------------------------
-
-function MedicalPost() {
-  const [x, , z] = MEDICAL;
-  return (
-    <group position={[x, 0, z]}>
-      <mesh position={[0, 2, 0]}>
-        <boxGeometry args={[14, 4, 10]} />
-        <meshStandardMaterial color="#f6f3ef" roughness={0.6} />
-      </mesh>
-      <mesh position={[0, 5.3, 0]} rotation-y={Math.PI / 4}>
-        <coneGeometry args={[9.6, 2.6, 4]} />
-        <meshStandardMaterial color="#f6f3ef" roughness={0.6} />
-      </mesh>
-      {/* Red cross on the roof and the front */}
-      {[
-        { position: [0, 6.7, 0] as Vec3, rotation: [-Math.PI / 2, 0, 0] as Vec3, size: 1 },
-        { position: [0, 2.2, 5.05] as Vec3, rotation: [0, 0, 0] as Vec3, size: 0.6 },
-      ].map(({ position, rotation, size }, i) => (
-        <group key={i} position={position} rotation={rotation} scale={size}>
-          <mesh>
-            <planeGeometry args={[5, 1.6]} />
-            <meshBasicMaterial color="#e3121d" toneMapped={false} />
-          </mesh>
-          <mesh>
-            <planeGeometry args={[1.6, 5]} />
-            <meshBasicMaterial color="#e3121d" toneMapped={false} />
-          </mesh>
-        </group>
-      ))}
-      {/* Ambulance */}
-      <group position={[12, 0, 2]}>
-        <mesh position={[0, 1.6, 0]}>
-          <boxGeometry args={[2.6, 2.8, 6.5]} />
-          <meshStandardMaterial color="#ffffff" roughness={0.4} />
-        </mesh>
-        <mesh position={[0, 1.7, 0]}>
-          <boxGeometry args={[2.65, 0.5, 6.55]} />
-          <meshBasicMaterial color="#e3121d" />
-        </mesh>
-        <mesh position={[0, 3.2, -2]}>
-          <boxGeometry args={[1.4, 0.35, 0.5]} />
-          <meshBasicMaterial color="#ff3b3b" toneMapped={false} />
-        </mesh>
-      </group>
-      <pointLight position={[0, 9, 8]} intensity={220} distance={40} decay={1.6} color="#ffe6e0" />
-      <Sign text="First Aid" position={[0, 0, 12]} width={11} />
-    </group>
-  );
-}
-
 // ---------- Help desk: welcome kiosk near the front plaza ------------------
 
 function HelpDesk() {
@@ -191,82 +140,12 @@ function Bookshop() {
   );
 }
 
-// ---------- Accommodation: hostel blocks ------------------------------------
-
-function useWindowTexture() {
-  return useMemo(() => {
-    const canvas = document.createElement("canvas");
-    canvas.width = 128;
-    canvas.height = 128;
-    const ctx = canvas.getContext("2d")!;
-    ctx.fillStyle = "#000";
-    ctx.fillRect(0, 0, 128, 128);
-    for (let row = 0; row < 4; row++) {
-      for (let col = 0; col < 4; col++) {
-        ctx.fillStyle = (row * 7 + col * 3) % 5 === 0 ? "#2a1a14" : "#ffd2a8";
-        ctx.fillRect(col * 32 + 9, row * 32 + 8, 14, 16);
-      }
-    }
-    const texture = new CanvasTexture(canvas);
-    texture.colorSpace = SRGBColorSpace;
-    texture.wrapS = texture.wrapT = RepeatWrapping;
-    return texture;
-  }, []);
-}
-
-const HOSTEL_BLOCKS: { x: number; z: number; w: number; d: number; floors: number; r: number }[] = [
-  { x: -55, z: -45, w: 60, d: 14, floors: 4, r: 0 },
-  { x: 25, z: -45, w: 60, d: 14, floors: 4, r: 0 },
-  { x: -55, z: 0, w: 60, d: 14, floors: 3, r: 0 },
-  { x: 25, z: 0, w: 60, d: 14, floors: 3, r: 0 },
-  { x: -55, z: 45, w: 60, d: 14, floors: 4, r: 0 },
-  { x: 25, z: 45, w: 60, d: 14, floors: 4, r: 0 },
-];
-
-function Hostel({ w, d, floors, texture }: { w: number; d: number; floors: number; texture: CanvasTexture }) {
-  const h = floors * 3.4;
-  const map = useMemo(() => {
-    const t = texture.clone();
-    t.repeat.set(w / 8, floors / 2);
-    t.needsUpdate = true;
-    return t;
-  }, [texture, w, floors]);
-  return (
-    <group>
-      <mesh position={[0, h / 2, 0]}>
-        <boxGeometry args={[w, h, d]} />
-        <meshStandardMaterial color="#e9e0d2" roughness={0.85} emissive="#ffffff" emissiveMap={map} emissiveIntensity={1.1} />
-      </mesh>
-      <mesh position={[0, h + 1, 0]}>
-        <boxGeometry args={[w + 1.5, 2, d + 1.5]} />
-        <meshStandardMaterial color="#b4302a" roughness={0.7} />
-      </mesh>
-    </group>
-  );
-}
-
-function Hostels() {
-  const texture = useWindowTexture();
-  return (
-    <group position={HOSTELS}>
-      {HOSTEL_BLOCKS.map((b, i) => (
-        <group key={i} position={[b.x, 0, b.z]} rotation-y={b.r}>
-          <Hostel w={b.w} d={b.d} floors={b.floors} texture={texture} />
-        </group>
-      ))}
-      <Sign text="Canaanland Hostels" position={[-15, 0, 78]} width={20} />
-    </group>
-  );
-}
-
 export function Services() {
   return (
     <group>
       <BusPark />
-      <MedicalPost />
       <HelpDesk />
       <Bookshop />
-      <Hostels />
     </group>
   );
 }

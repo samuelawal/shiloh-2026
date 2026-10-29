@@ -31,11 +31,11 @@ export function Programme() {
               onClick={() => setActive(index)}
               className={`shrink-0 rounded-2xl border px-5 py-3 text-left transition ${
                 index === active
-                  ? "border-wine bg-wine text-white shadow-lg"
-                  : "border-black/10 bg-cream text-ink hover:border-wine/40"
+                  ? "border-umber bg-umber text-white shadow-lg"
+                  : "border-black/10 bg-cream text-ink hover:border-umber/40"
               }`}
             >
-              <span className={`block text-xs font-bold tracking-widest uppercase ${index === active ? "text-accent" : "text-flame"}`}>
+              <span className={`block text-xs font-bold tracking-widest uppercase ${index === active ? "text-accent" : "text-sun"}`}>
                 {item.day}
               </span>
               <span className="block text-sm font-semibold">{item.date}</span>
@@ -44,11 +44,11 @@ export function Programme() {
         </div>
 
         <div id="programme-panel" role="tabpanel" className="mx-auto mt-10 max-w-3xl">
-          <h3 className="font-display text-2xl font-semibold">{day.title}</h3>
+          <h3 className="font-display text-2xl">{day.title}</h3>
           <ol className="mt-6 space-y-4">
             {day.sessions.map((session) => (
               <li key={session.time + session.title} className="card flex items-start gap-5">
-                <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-accent/15 px-3 py-1 text-xs font-bold text-wine">
+                <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-accent/15 px-3 py-1 text-xs font-bold text-umber">
                   <Clock className="size-3.5" /> {session.time}
                 </span>
                 <div>
